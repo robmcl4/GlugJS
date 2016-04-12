@@ -1,6 +1,13 @@
 body {
   margin-top: 10px;
   padding-bottom: 20px;
+  background-image: url(/img/bg.png);
+  color: white;
+}
+
+.content {
+  background: rgba(10, 10, 10, 0.3);
+  padding: 1em;
 }
 
 .hidden {
