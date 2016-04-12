@@ -1,5 +1,14 @@
 var API_BASE = "http://localhost:3000"
 
+function gen_severity_color(i) {
+  i = Math.max(0, Math.min(1, i));
+  var r = 256;
+  var g = 200 - Math.round((200-30)*i);
+  var b = 53;
+  return "rgb("+r+","+g+","+b+")";
+}
+
+
 function displayDetails(poster, runtime, desc) {
   $("#title-details .desc").html(desc);
   $("#title-details .runtime").html(Math.round(runtime/60));
@@ -19,6 +28,13 @@ function displayWords(runtime, words, title, imdb_id) {
 
   var template = $("#candidate-words .template .candidate-word").clone().removeClass("hidden");
   var container = $("#candidate-words .container");
+  var min_occ = words[0].occurances.length;
+  var max_occ = words[0].occurances.length;
+  for (var i=0; i<words.length; i++) {
+    min_occ = Math.min(min_occ, words[i].occurances.length);
+    max_occ = Math.max(max_occ, words[i].occurances.length);
+  }
+
   container.html("");
   for (var i=0; i<words.length; i++) {
     var word = words[i];
@@ -28,10 +44,11 @@ function displayWords(runtime, words, title, imdb_id) {
     curr.find(".occurances").html(word.occurances.length);
 
     var occurances = word.occurances;
+    var rgb = gen_severity_color((occurances.length - min_occ) / (max_occ - min_occ));
     for (var j=0; j < occurances.length; j++) {
       var occ = occurances[j];
       var perc = Math.round(100 * occ / runtime);
-      curr.find(".line").append("<div class=\"dot\" style=\"left: " + perc + "%\"></div>");
+      curr.find(".line").append("<div class=\"dot\" style=\"left: " + perc + "%; background: " + rgb + "\"></div>");
     }
 
     container.append(curr);
